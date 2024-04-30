@@ -1,0 +1,105 @@
+{	
+	"extensionName": "Strings",
+	"description": "Strings ext. functions (Offline only)",
+	"version": "0.1.3",
+	"author": "AbaddoN(whoamy@yandex.ru)",
+	"homepage": "http://forum.amperka.ru/threads/%D0%A0%D0%B0%D1%81%D1%88%D0%B8%D1%80%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B4%D0%BB%D1%8F-mblock-%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3-s4a-%D0%B4%D0%BB%D1%8F-%D0%B4%D0%B5%D1%82%D0%B5%D0%B9.6851/",
+	"sort":2,
+	"javascriptURL":"js/Strings.js",
+  	"firmware":"1.0",
+  	"extensionPort":0,
+	"tags" : "makeblock,arduino,string",
+	
+	"blockSpecs": [
+		//___Запись в строковую переменную
+		["w", "string № %n text = %s",   //_ определяем свой блок и запрашиваем параметры
+		"Strings_js01",    //_  это вызываемая функция из ява-скрипта, поскольку моих функций там нет, я написал случайное имя
+		"1", "TEXT",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"--separator--String string{0};\n",
+			"work":" string{0}= String({1});\n",
+			"loop":""
+		}],
+		
+		
+		//___Строковая переменная
+		["R", "string № %n",
+		"Strings_js02",
+		"1",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"--separator--String string{0};\n",
+			"work":" string{0}",
+			"loop":""
+		}],
+		
+		
+		//___Выбрать часть строки
+		["R", "part of string № %n from %n to %n chars",
+		"Strings_js03",
+		"1", "0", "1",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"--separator--String string{0};\n",
+			"work":" string{0}.substring({1}-1, {2})",		//_ Здесь отнимаем от первоначального символа 1 - потому что выборка в строке начинается со следующего номера символа (см. метод substring), а вот номер конечного символа - включительно
+			"loop":""
+		}],
+		
+		
+		//___Замена текста в строке
+		["w", "in string № %n replace %s to %s",
+		"Strings_js04",
+		"1", "text1", "text2",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"--separator--String string{0};\n",
+			"work":" string{0}.replace(String ({1}), String({2}));\n",
+			"loop":""
+		}],
+		
+		
+		//___Указать символ по его коду
+		["R", "char № %n",
+		"Strings_js05",
+		"36",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"",
+			"work":" char({0})",
+			"loop":""
+		}]
+		
+		
+		
+
+		
+		
+	],
+	
+	"menus": {
+		
+	},
+	
+	"values":{
+		
+	},
+	
+	"translators":{
+		"ru-RU":{
+		"string № %n text = %s":"строка № %n текст = %s",
+		"string № %n":"строка № %n",
+		"part of string № %n from %n to %n chars":"часть строки № %n - от %n до %n символа-байта",
+		"char № %n":"символ № %n",
+		"in string № %n replace %s to %s":"в строке № %n заменить %s на %s"
+
+		//_  идентификатор языка "ru-RU" берется из файла локализации locale.xlsx.
+		}
+	}
+	
+}

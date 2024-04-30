@@ -1,0 +1,270 @@
+{	
+	"extensionName": "Arduino-Offline",
+	"description": "Replacement standard ext. - Arduino (Offline only)",
+	"version": "0.1.3",
+	"author": "AbaddoN(whoamy@yandex.ru)",
+	"homepage": "http://forum.amperka.ru/threads/%D0%A0%D0%B0%D1%81%D1%88%D0%B8%D1%80%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B4%D0%BB%D1%8F-mblock-%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3-s4a-%D0%B4%D0%BB%D1%8F-%D0%B4%D0%B5%D1%82%D0%B5%D0%B9.6851/",
+	"sort":0,
+	"javascriptURL":"js/Arduino_Offline.js",
+  	"firmware":"1.0",
+  	"extensionPort":0,
+	"tags" : "makeblock,arduino",
+	
+	"blockSpecs": [
+		//___Блок заголовок, позволяющий генерировать код и загружать его в Arduino
+		["h","Arduino-Offline Program","runArduino"],
+		
+		
+		//___Считывание дискретного сигнала с указанного пина.
+		["B", "read digital pin %n",	//_ тип, название и состав блока
+		"js01",							//_ функция ява-скрипта для режима Скрэтч (идентификатор блока)
+		"0",							//_ значение элемента блока по умолчанию
+		{
+			"setup":" pinMode({0}, INPUT);\n",
+			"inc":"",
+			"def":"",
+			"work":" digitalRead({0})",
+			"loop":""
+		}],
+		
+		
+		//___Считывание аналогового сигнала с указанного пина.
+		["R", "read analog pin (A)%n",
+		"js02",
+		"0",
+		{
+			"setup":" pinMode(A0+{0}, INPUT);\n",
+			"inc":"",
+			"def":"",
+			"work":" analogRead(A0+{0})",
+			"loop":""
+		}],
+		
+		
+		//___Считать длину импульса в микросекундах.
+		["R", "read pulse as %d.digital pin %n timeout %n",
+		"js03",
+		"HIGH","0",20000,
+		{
+			"setup":" pinMode({0}, INPUT);\n",
+			"inc":"",
+			"def":"",
+			"work":" pulseIn({1}, {0}, {2})",
+			"loop":""
+		}],
+		
+		
+		//___Установить пин в HIGH или LOW
+		["w", "set digital pin %n output as %d.digital",
+		"js04", 
+		"0", "HIGH",
+		{
+			"setup":" pinMode({0}, OUTPUT);\n",
+			"inc":"",
+			"def":"",
+			"work":" digitalWrite({0}, {1});\n",
+			"loop":""
+		}],
+		
+		
+		//___Задать аналоговый (PWM - ШИМ) пин.
+		["w", "set pwm pin %n output as %d.pwmvalue",
+		"js05",
+		"5", 0,
+		{
+			"setup":" pinMode({0}, OUTPUT);\n",
+			"inc":"",
+			"def":"",
+			"work":" analogWrite({0}, {1});\n",
+			"loop":""
+		}],
+
+		
+		//___Проиграть звук (ноту)
+		["w", "play tone pin %n on note %d.notes beat %d.beats",
+		"js06",
+		"9", "C4","Half",
+		{
+			"setup":" pinMode({0}, OUTPUT);\n",
+			"inc":"",
+			"def":"",
+			"work":" tone({0}, {1}, {2});\n delay({2});\n",
+			"loop":""
+		}],
+
+		
+		//___Подключение и управление сервоприводом
+		["w", "set servo pin %n angle as %d.servovalue",
+		"js07",
+		"10", 90,
+		{
+			"setup":" servo_N{0}.attach({0});\n",			//_ Инициализируем подключение сервы к указанному пину
+			"inc":"#include <Servo.h>\n",
+			"def":"--separator--Servo servo_N{0};\n",		//_ Объявляем объект Servo
+			"work":" servo_N{0}.write({1});\n",				//_ Отправляем сигнал на серву
+			"loop":""
+		}],
+		
+		
+		//___Подключение и получение данных с ультразвукового датчика
+		["R", "read ultrasonic sensor trig pin %n echo pin %n, units %d.USonicUnits",
+		"js08",
+		12,11,"cm",
+		{
+			"setup":" pinMode({0}, OUTPUT);\n pinMode({1}, INPUT);\n",
+			"inc":"#include \"usonic.h\"\n",					//_ (сделал небольшую библиотеку, потому что без неё генерится довольно объемный код - который некрасиво выглядит и смущает новичков)
+			"def":"--separator--USonicClass UltraSonic;\n",		//_ объявляем объект класса Ultrasonic
+			"work":" UltraSonic.getDistance({0}, {1}, {2})",
+			"loop":""
+		}],
+		
+		
+		//___Инициализация COM порта с указанием скорости
+		["w", "Serial.begin ( %d.Sspeed )",		//_ определяем свой блок и запрашиваем скорость последовательного соединения из меню
+		"js09",
+		"115200",           					//_  значение скорости по умолчанию (для подключения к компу с mBlock)
+		{
+			"setup":" Serial.begin({0});\n",	//_  Инициируем последовательное соединение и задаем скорость передачи данных в бит/c
+			"inc":"",
+			"def":"",
+			"work":"",     
+			"loop":""
+		}],
+		
+		
+		//___Отправка сообщения через COM порт
+		["w", "serial write %s",
+		"js10",
+		"HELLO",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"",
+			"work":" Serial.println({0});\n",
+			"loop":""
+		}],		
+		
+		
+		//___Проверка COM порта на наличие данных
+		["R", "serial available bytes",
+		"js11",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"",
+			"work":" Serial.available()",
+			"loop":""
+		}],	
+	
+		//___Считать байт (код символа) из COM порта
+		["R", "serial read byte",
+		"js12",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"",
+			"work":" Serial.read()",
+			"loop":""
+		}],	
+		
+		
+		//___Запись числа в двоичном виде
+		["r", "binary number ( %n )",  //_ определяем свой блок, задаем в нем побитно число
+		"js13",
+		"00101010",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"",
+			"work":" 0b{0}",   			//_  число в двоичном формате
+			"loop":""
+		}],
+		
+
+		//___Таймер - кол-во секунд, от старта программы или от последнего перезапуска таймера
+		["R", "timer (sec)",
+		"js14",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"--separator--double currentTime = 0;\n--separator--double lastTime = 0;\n--separator--double getLastTime(){\n\t return currentTime = millis()/1000.0 - lastTime;\n}\n",
+			"work":" getLastTime()",
+			"loop":""
+		}],
+		
+		
+		//___Сброс таймера (отсчет начинается заново)
+		["w", "reset timer",
+		"js15",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"--separator--double currentTime = 0;\n--separator--double lastTime = 0;\n",
+			"work":" lastTime = millis()/1000.0;\n",		//_ сброс таймера, путем присваивания переменной отсчета - текущего времени
+			"loop":""
+		}],
+		
+		
+		//___Запись числа в сдвиговый регистр 74HC595
+		["w", "ShiftOUT clockPin %n dataPin %n data %n",   //_ определяем свой блок и запрашиваем параметры
+		"js16",
+		"2", "3", "255",    							//_  это параметры по умолчанию для clockPin, dataPin и сами данные
+		{
+			"setup":" pinMode({0},OUTPUT);\n pinMode({1},OUTPUT);\n",     	//_  код вставляемый в void setup{}, \n - это переход на следующую строку, здесь устанавливаем введеные в блоке пины в режим вывода, здесь {0} и {1} это порядковые номера вводимых значений в блоке, отсчет начинается с 0
+			"inc":"",
+			"def":"",
+			"work":" shiftOut({1}, {0}, LSBFIRST, {2});\n",					//_ Собственно сама функция передачи байта в регистр, здесь параметр порядка передачи битов: MSBFIRST  или LSBFIRST (Most Significant Bit First - старший значащий бит первым, или Least Significant Bit - младший значащий бит первым)
+			"loop":""
+		}]
+		
+		
+		
+
+		
+		
+	],
+	
+	"menus": {
+		"digital":["HIGH","LOW"],	
+		"pwmvalue":["0","50","100","150","200","255"],
+		"beats":["Half","Quarter","Eighth","Whole","Double","Zero"],
+		"notes":["C2","D2","E2","F2","G2","A2","B2","C3","D3","E3","F3","G3","A3","B3","C4","D4","E4","F4","G4","A4","B4","C5","D5","E5","F5","G5","A5","B5","C6","D6","E6","F6","G6","A6","B6","C7","D7","E7","F7","G7","A7","B7","C8","D8"],
+		"servovalue":["0","45","90","135","180"],
+		"USonicUnits":["cm","inch"],
+		"Sspeed":["300","1200","2400","4800","9600","14400","19200","28800","38400","57600","115200"]
+		
+	},
+	
+	"values":{
+		"HIGH":1,"LOW":0,	
+		"B0":31,"C1":33,"D1":37,"E1":41,"F1":44,"G1":49,"A1":55,"B1":62,
+			"C2":65,"D2":73,"E2":82,"F2":87,"G2":98,"A2":110,"B2":123,
+			"C3":131,"D3":147,"E3":165,"F3":175,"G3":196,"A3":220,"B3":247,
+			"C4":262,"D4":294,"E4":330,"F4":349,"G4":392,"A4":440,"B4":494,
+			"C5":523,"D5":587,"E5":659,"F5":698,"G5":784,"A5":880,"B5":988,
+			"C6":1047,"D6":1175,"E6":1319,"F6":1397,"G6":1568,"A6":1760,"B6":1976,
+			"C7":2093,"D7":2349,"E7":2637,"F7":2794,"G7":3136,"A7":3520,"B7":3951,
+			"C8":4186,"D8":4699,
+		"Half":500,"Quarter":250,"Eighth":125,"Whole":1000,"Double":2000,"Zero":0,
+		"cm":1,"inch":2
+		
+	},
+	
+	"translators":{
+		"ru-RU":{
+		"Arduino-Offline Program":"Программа в ARDUINO",
+		"read pulse as %d.digital pin %n timeout %n":"считать импульс %d.digital с pin %n таймаут %n мксек.",
+		"read ultrasonic sensor trig pin %n echo pin %n, units %d.USonicUnits":"считать ультразвук.датчик Trig pin %n Echo pin %n, ед.изм. %d.USonicUnits",
+		"cm":"см","inch":"дюйм",
+		"Serial.begin ( %d.Sspeed )":"Инициализация COM порта, скорость: ( %d.Sspeed )",
+		"serial write %s":"передать в COM порт: %s",
+		"binary number ( %n )":"число в двоичном виде: ( %n )",
+		"timer (sec)":"таймер (сек.)",
+		"ShiftOUT clockPin %n dataPin %n data %n":"в сдвиговый регистр, clockPin %n dataPin %n - данные %n"
+
+
+		//_  идентификатор языка "ru-RU" для перевода берется из файла локализации locale.xlsx.
+		}
+	}
+	
+}

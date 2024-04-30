@@ -1,0 +1,188 @@
+{	
+	"extensionName": "nrf24l01",
+	"description": "NRF24L01 SPI Wireless Receiver-Trasmitter 2,4GHz  (Offline only)",
+	"version": "0.3.4",
+	"author": "AbaddoN(whoamy@yandex.ru)",
+	"homepage": "http://forum.amperka.ru/threads/%D0%A0%D0%B0%D1%81%D1%88%D0%B8%D1%80%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B4%D0%BB%D1%8F-mblock-%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3-s4a-%D0%B4%D0%BB%D1%8F-%D0%B4%D0%B5%D1%82%D0%B5%D0%B9.6851/",
+	"sort":2,
+	"javascriptURL":"js/nrf24l01.js",
+  	"firmware":"1.0",
+  	"extensionPort":0,
+	"tags" : "makeblock,arduino,Wireless,Receiver-Trasmitter,NRF24L01,RF24",
+
+	"blockSpecs": [
+		
+		["w", "NRF24L01 initialise: pin CE %n pin CSN %n",   	
+		"NRF24L01_01",
+		"9","10",			        							
+		{
+			"setup":" radioRF24.begin();\n",     				
+			"inc":"#include <SPI.h>\n#include \"nRF24L01.h\"\n#include \"RF24.h\"\n#include \"RF24MyExt.h\"\n",   		
+			"def":"--separator--RF24 radioRF24({0}, {1});\n--separator--uint8_t  pipe;",	
+			"work":"",
+			"loop":""
+		}],
+
+
+		
+		["w", "NRF24L01 set. Channel: %d.channels DataRate: %d.rates PALevel: %d.levels",   	
+		"NRF24L01_02",
+		5,"1Mbps","PA_MAX",			        			
+		{
+			"setup":" radioRF24.setChannel({0});\n radioRF24.setDataRate(myDataRate{1});\n radioRF24.setPALevel(myPALevel{2});\n",			
+			"inc":"",
+			"def":"int radioRF24Data[1];\n",			
+			"work":"",
+			"loop":""
+		}],		
+
+
+		
+		["w", "Make NRF24L01 Transmiter with ID: %d.IDs",   	
+		"NRF24L01_03",
+		"0xAABBCCDD11 HEX",			        			
+		{
+			"setup":" radioRF24.openWritingPipe(myIDAdress{0});\n",
+			"inc":"",
+			"def":"",
+			"work":"",
+			"loop":""
+		}],	
+
+
+		
+		["w", "Make NRF24L01 Receiver from: pipe %d.pipes ID %d.IDs",   	
+		"NRF24L01_04",
+		"1",
+		"0xAABBCCDD11 HEX",			        			
+		{
+			"setup":" radioRF24.openReadingPipe({0}, myIDAdress{1});\n",
+			"inc":"",
+			"def":"",
+			"work":"",
+			"loop":""
+		}],	
+
+
+		
+		["w", "NRF24L01 Start Listening",   	
+		"NRF24L01_05",
+		"",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"",
+			"work":" radioRF24.startListening();\n",
+			"loop":""
+		}],	
+
+
+		
+		["w", "NRF24L01 Stop Listening",   	
+		"NRF24L01_06",
+		"",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"",
+			"work":" radioRF24.stopListening();\n",
+			"loop":""
+		}],	
+
+
+		
+		["b", "NRF24L01 Receive available",   	
+		"NRF24L01_07",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"",
+			"work":"radioRF24.available(&pipe)",	
+			"loop":""
+		}],	
+
+
+		
+		["w", "NRF24L01 Receive to (int): %n",
+		"NRF24L01_08",
+		0,
+		{
+			"setup":"",
+			"inc":"",
+			"def":"",
+			"work":"radioRF24.read(&radioRF24Data, sizeof(radioRF24Data));\n{0} = radioRF24Data[0];\n",	
+			"loop":""
+		}],
+
+
+		
+		["w", "NRF24L01 send (int): %n",   	
+		"NRF24L01_09",
+		0,
+		{
+			"setup":"",
+			"inc":"",
+			"def":"",
+			"work":"radioRF24Data[0] = (int) {0};\nradioRF24.write(radioRF24Data, 1);\n",	
+			"loop":""
+		}],
+
+
+		
+		["r", "received by pipe №",
+		"NRF24L01_10",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"",
+			"work":"pipe",   	
+			"loop":""
+		}]
+
+	
+
+
+],
+		
+			
+			
+	"menus": {
+		"channels":["0","5","10","15","50","100","125"],
+		"rates":["1Mbps","2Mbps","250Kbps"],
+		"levels":["PA_MIN","PA_LOW","PA_HIGH","PA_MAX"],
+		"IDs":["0x7878787878 HEX","0xAABBCCDD11 HEX","0xAABBCCDD22 HEX","0xAABBCCDD33 HEX","0xAABBCCDD44 HEX","0xAABBCCDD55 HEX","0xAABBCCDD66 HEX","0xAABBCCDD77 HEX","0xAABBCCDD88 HEX","0xAABBCCDD99 HEX"],
+		"pipes":["0","1","2","3","4","5"]
+		
+	},
+
+
+	"values":{
+		"1Mbps":1,"2Mbps":2,"250Kbps":0,
+		"PA_MIN":0,"PA_LOW":1,"PA_HIGH":2,"PA_MAX":3,
+		"0x7878787878 HEX":0,"0xAABBCCDD11 HEX":1,"0xAABBCCDD22 HEX":2,"0xAABBCCDD33 HEX":3,"0xAABBCCDD44 HEX":4,
+		"0xAABBCCDD55 HEX":5,"0xAABBCCDD66 HEX":6,"0xAABBCCDD77 HEX":7,"0xAABBCCDD88 HEX":8,"0xAABBCCDD99 HEX":9
+	},
+
+
+"translators":{
+		"ru-RU":{ 
+		"NRF24L01 initialise: pin CE %n pin CSN %n":"Инициализация NRF24L01 модуля: CE пин %n CSN пин %n",
+		"NRF24L01 set. Channel: %d.channels DataRate: %d.rates PALevel: %d.levels":"Настроить NRF24L01. Канал: %d.channels Скорость: %d.rates Мощность: %d.levels",
+		"Make NRF24L01 Transmiter with ID: %d.IDs":"Сделать NRF24L01 передатчиком с ID: %d.IDs",
+		"Make NRF24L01 Receiver from: pipe %d.pipes ID %d.IDs":"Сделать NRF24L01 приемником: труба № %d.pipes ID %d.IDs",
+		"NRF24L01 Start Listening":"NRF24L01 начать прием",
+		"NRF24L01 Stop Listening":"NRF24L01 остановить прием",
+		"NRF24L01 Receive available":"NRF24L01 получены данные",
+		"NRF24L01 Receive to (int): %n":"NRF24L01 принять в (int): %n",
+		"NRF24L01 send (int): %n":"NRF24L01 передать (int): %n",
+		"received by pipe №":"получено трубой №",
+		"1Mbps":"1МБсек","2Mbps":"2МБсек","250Kbps":"250КБсек",
+		"PA_MIN":"МИН.","PA_LOW":"НИЗК.","PA_HIGH":"ВЫС.","PA_MAX":"МАКС."
+
+
+
+		
+		}
+	}
+}
+

@@ -1,0 +1,184 @@
+{	
+	"extensionName": "LiquidCrystalRus",
+	"description": "LiquidCrystal Rus Simbols (Offline only) LCD",
+	"version": "0.1.5",
+	"author": "AbaddoN(whoamy@yandex.ru)",
+	"homepage": "http://forum.amperka.ru/threads/%D0%A0%D0%B0%D1%81%D1%88%D0%B8%D1%80%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B4%D0%BB%D1%8F-mblock-%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3-s4a-%D0%B4%D0%BB%D1%8F-%D0%B4%D0%B5%D1%82%D0%B5%D0%B9.6851/",
+	"sort":2,
+	"javascriptURL":"js/LiquidCrystalRus.js",
+  	"firmware":"1.0",
+  	"extensionPort":0,
+	"tags" : "makeblock,arduino,LiquidCrystal,Rus,LCD",
+
+	"blockSpecs": [
+		
+		["w", "LCD pins (RS %n, E %n, d4 %n, d5 %n, d6 %n, d7 %n )",   	
+		"LiquidCrystalRus01",
+		"12", "11", "5", "4", "3", "2",        			
+		{
+			"setup":"",     					 		
+			"inc":"#include \"LiquidCrystalNEW.h\"\n",    
+			"def":"--separator--LiquidCrystal lcd({0}, {1}, {2}, {3}, {4}, {5});\n",           
+			"work":"",
+			"loop":""
+		}],
+
+
+		
+		["w", "LCD type (cols %n, rows %n )",  	
+		"LiquidCrystalRus02",
+		"16", "2",                    			
+		{
+			"setup":" lcd.begin({0}, {1});\n",
+			"inc":"",
+			"def":"",
+			"work":"",
+			"loop":""
+		}],	
+
+		
+		
+		["w", "LCD Display ON",
+		"LiquidCrystalRus03",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"",
+			"work":" lcd.display();\n",
+			"loop":""
+		}],
+		
+
+		
+		["w", "LCD Display OFF",
+		"LiquidCrystalRus04",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"",
+			"work":" lcd.noDisplay();\n",
+			"loop":""
+		}],
+		
+		
+		
+		["w", "LCD clear",            
+		"LiquidCrystalRus05",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"",
+			"work":" lcd.clear();\n",
+			"loop":""
+		}],	
+
+
+		
+		["w", "SetCursor LCD (col %n, row %n )",	
+		"LiquidCrystalRus06",
+		"1", "1",                        
+		{
+			"setup":"",
+			"inc":"",
+			"def":"",
+			"work":" lcd.setCursor({0}-1, {1}-1);\n",		
+			"loop":""
+		}],	
+		
+		
+		
+		["w", "LCD print ENG %s",	
+		"LiquidCrystalRus07",
+		"LCD Hello!",                        
+		{
+			"setup":"",
+			"inc":"",
+			"def":"",
+			"work":" lcd.print({0});\n",
+			"loop":""
+		}],
+
+
+		
+		["w", "char №%d.NumCh create as %d.defChar",
+		"LiquidCrystalRus08",
+		"1", "_Be_",
+		{
+			"setup":" lcd.createChar({0}, NEWRusChars.NewChar{1});\n",	
+			"inc":"#include \"NEWrusChars.h\"\n",						
+			"def":"--separator--MoreRusCharsClass NEWRusChars;\n",		
+			"work":"",
+			"loop":""
+		}],
+		
+		
+		
+		["w", "print char №%d.NumCh",
+		"LiquidCrystalRus09",
+		"1",
+		{
+			"setup":"",
+			"inc":"",
+			"def":"",
+			"work":" lcd.write({0});\n",		
+			"loop":""
+		}],
+		
+		
+		
+		["w", "char №%d.NumCh bit rows- 1%n 2%n 3%n 4%n 5%n 6%n 7%n 8%n",
+		"LiquidCrystalRus10",
+		"1", "00000", "00000", "00000", "00000", "00000", "00000", "00000", "00000",		
+		{
+			"setup":" lcd.createChar({0}, myChar{0});\n",			
+			"inc":"",
+			"def":"--separator--uint8_t myChar{0}[8]={B{1},B{2},B{3},B{4},B{5},B{6},B{7},B{8},};\n",	
+			"work":"",
+			"loop":""
+		}]
+
+
+
+
+],
+		
+			
+			
+	"menus": {
+		"defChar":["_Be_","_Ge_","_De_","_Yo_","_Je_","_Ze_","_I_","_Ii_","_Le_","_Pe_","_Y_","_Fe_","_Tce_",
+		"_Che_","_She_","_Sche_","_b_","_bl_","_`b_","_Ee_","_Yu_","_Ya_","♥","⌂","`O","☼","°"],
+		
+		"NumCh":[1,2,3,4,5,6,7,8]
+	},
+
+
+	"values":{
+		"_Be_":101, "_Ge_":102, "_De_":103, "_Yo_":104, "_Je_":105, "_Ze_":106, "_I_":107, "_Ii_":108, "_Le_":109, 
+		"_Pe_":110, "_Y_":111, "_Fe_":112, "_Tce_":113, "_Che_":114, "_She_":115, "_Sche_":116, "_b_":117, 
+		"_bl_":118, "_`b_":119, "_Ee_":120, "_Yu_":121, "_Ya_":122, "♥":123, "⌂":124, "`O":125, "☼":126, "°":127
+		
+	},
+
+
+"translators":{
+		"ru-RU":{ 
+		"LCD pins (RS %n, E %n, d4 %n, d5 %n, d6 %n, d7 %n )":"LCD пины (RS %n, E %n, D4 %n, D5 %n, D6 %n, D7 %n )",
+		"LCD type (cols %n, rows %n )":"тип LCD (столбцов %n, строк %n )",
+		"LCD clear":"очистить LCD",
+		"SetCursor LCD (col %n, row %n )":"установить курсор (LCD столбец %n, строка %n )",
+		"LCD print ENG %s":"вывести на LCD англ. %s",
+		"LCD Display OFF":"выключить LCD",
+		"LCD Display ON":"включить LCD",
+		"char №%d.NumCh create as %d.defChar":"создать символ №%d.NumCh в виде %d.defChar",
+		"print char №%d.NumCh":"вывод символа №%d.NumCh",
+		"_Be_":"Б", "_Ge_":"Г", "_De_":"Д", "_Yo_":"Ё", "_Je_":"Ж", "_Ze_":"З", "_I_":"И", "_Ii_":"Й", "_Le_":"Л",
+		"_Pe_":"П", "_Y_":"У", "_Fe_":"Ф", "_Tce_":"Ц", "_Che_":"Ч", "_She_":"Ш", "_Sche_":"Щ", "_b_":"Ь",
+		"_bl_":"Ы","_`b_":"Ъ", "_Ee_":"Э", "_Yu_":"Ю", "_Ya_":"Я",
+		"char №%d.NumCh bit rows- 1%n 2%n 3%n 4%n 5%n 6%n 7%n 8%n":"символ №%d.NumCh из рядов бит- 1%n 2%n 3%n 4%n 5%n 6%n 7%n 8%n"
+
+
+		
+		}
+	}
+}
+

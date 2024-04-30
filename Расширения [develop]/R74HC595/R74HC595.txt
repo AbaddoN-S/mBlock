@@ -1,0 +1,75 @@
+{	
+	"extensionName": "R74HC595",
+	"description": "To work with shift register (Arduino-Offline only)",
+	"version": "0.1.2",
+	"author": "AbaddoN(whoamy@yandex.ru)",
+	"homepage": "http://forum.amperka.ru/threads/%D0%A0%D0%B0%D1%81%D1%88%D0%B8%D1%80%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B4%D0%BB%D1%8F-mblock-%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3-s4a-%D0%B4%D0%BB%D1%8F-%D0%B4%D0%B5%D1%82%D0%B5%D0%B9.6851/",
+	"sort":2,
+	"javascriptURL":"js/R74HC595.js", //_  определяем путь к JavaScript файлу
+  	"firmware":"1.0",	//_  firmware version 
+  	"extensionPort":0,	//_  network port of extension, 0 for serial port
+	"tags" : "makeblock,arduino,R74HC595,shiftout",
+
+	"blockSpecs": [ //_  определяем свои блоки
+//_  "h" определение блока СОБЫТИЕ, "w" определение блока ЗАПИСИ, "r" определение блока ЧТЕНИЯ (в нашем случае обходимся без блока "h")
+
+//_  блоки "ShiftOUT clockPin %n dataPin %n" и "updateShiftRegister latchPin %n clockPin %n dataPin %n leds %n"
+//_  не использовать вместе, иначе будет два раза объявляться переменная leds.
+	
+		["w", "Leds %n",       //_ определяем блок для записи и запрашиваем параметр для переменной Leds (переменная, которая выводится в регистр сдвига)
+		"__",     //_  это вызываемая функция из ява-скрипта, поскольку моих функций там нет, я написал случайное имя
+		"0",      //_  это параметры по умолчанию для Leds
+		{"encode":"{d0}",
+		"setup":"",
+		"inc":"",
+		"def":"",
+		"work":" leds={0};\n",   //_  выполняемый код, присваиваем переменной Leds значение с порядковым номером {0} из блока Leds
+		"loop":""}],
+		
+		
+		["w", "ShiftOUT clockPin %n dataPin %n",   //_ определяем свой блок и запрашиваем 2 параметра
+		"_",    //_  это вызываемая функция из ява-скрипта, поскольку моих функций там нет, я написал случайное имя
+		"2", "3",    //_  это параметрs по умолчанию для clockPin и dataPin (перечисляем по порядку)
+		{"encode":"{d0}{d1}",     //_  зачем нужна эта строчка я не понял, взята из стандартного Arduino.s2e, здесь просто перечисляются по порядку вводимые переменные,
+		"setup":" pinMode({0},OUTPUT);\n pinMode({1},OUTPUT);\n",     //_  код вставляемый в void setup{}, \n - это переход на следующую строку, здесь устанавливаем введеные в блоке пины в режим вывода, здесь {0} и {1} это порядковые номера вводимых значений в блоке, отсчет начинается с 0
+		"inc":"",
+		"def":"--separator--byte leds = 0;\n",    //_  определяем переменную типа байт и присваиваем ей значение 0 по умолчанию
+		"work":" shiftOut({1}, {0}, LSBFIRST, leds);\n",  //_  выполняемый код, ради этой команды shiftOut собственно и затевалось это расширение
+		"loop":""}],
+		
+		
+		["w", "updateShiftRegister latchPin %n clockPin %n dataPin %n leds %n",     //_ определяем блок для записи в регистр сдвига с использованием созданной библиотеки (запись в регистр выполняется одним блоком без лишних телодвижений)
+		"___",                   //_  это вызываемая функция из ява-скрипта,
+		"2", "3", "4", "0",      //_  это параметры по умолчанию для 4-х полей в созданном блоке
+		{"encode":"{d0}{d1}{d2}{d3}", 
+		"setup":" pinMode({0}, OUTPUT);\n pinMode({1}, OUTPUT);\n pinMode({2}, OUTPUT);\n",  //_  код вставляемый в void setup{}, устанавливаем пины в режим вывода
+		"inc":"#include \"R74HC595.h\"\n",                                      //_  подключается файл созданной библиотеки, для работы  с регистром сдвига
+		"def":"--separator--byte leds = 0;\n--separator--R74HC595Class R74HC595({0}, {1}, {2});\n",    //_  определяем переменную типа байт, создаем экземпляр класса описанного в библиотеке
+		"work":" leds = {3};\n R74HC595.updateShiftRegister(leds);\n",     //_  выполняемый код, вызываем функцию описанную в библиотеке, передаем ей параметр, который нужно вывести в регистр сдвига
+		"loop":""
+		} 
+		]
+
+		
+],
+		
+			
+			
+	"menus": {},
+	"values":{},
+
+"translators":{
+		"ru-RU":{ //_  Перевод блоков на Русский, просто копируем названия блоков созданных выше и ставим в соответствие русские написания
+			"ShiftOUT clockPin %n dataPin %n":"запись данных в R74HC595, пин-тактов %n пин-данных %n",
+            "Leds %n":"данные для R74HC595 %n",
+			"updateShiftRegister latchPin %n clockPin %n dataPin %n leds %n":"R74HC595, пин-защелка %n пин-тактов. %n пин-данных %n данные %n"
+		//_  определение языка "ru-RU" необходимо взять из файла locale.xlsx - файла локализации mBlock, если требуется перевод на другой язык. Здесь также можно указывать перевод пунктов меню и возможно чегонибудь еще.
+		}
+	}
+}
+//_  Расширение создавалось после изучения следующих ресурсов:
+//_ http://arduino.ru/Hacking/LibraryTutorial
+//_ http://lesson.iarduino.ru/lesson/arduino-urok-4-registr-sdviga-74hc595-i-vosem-svetodiodov/kod-dlya-arduino.html
+//_ http://forum.makeblock.cc/t/how-to-add-an-extension-for-mblock/2280
+//_ http://arduino.ru/Tutorial/registr_74HC595
+//_ опубликовано впервые на: http://forum.amperka.ru/threads/%D0%A0%D0%B0%D1%81%D1%88%D0%B8%D1%80%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B4%D0%BB%D1%8F-mblock-%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3-s4a-%D0%B4%D0%BB%D1%8F-%D0%B4%D0%B5%D1%82%D0%B5%D0%B9.6851/
